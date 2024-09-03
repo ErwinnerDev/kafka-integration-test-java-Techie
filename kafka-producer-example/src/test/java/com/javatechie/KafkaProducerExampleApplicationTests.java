@@ -23,10 +23,11 @@ import static org.awaitility.Awaitility.await;
 public class KafkaProducerExampleApplicationTests {
 
     @Container
-    static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+    static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest")); //https://java.testcontainers.org/modules/kafka/
 
     @DynamicPropertySource
     public static void initKafkaProperties(DynamicPropertyRegistry registry) {
+        //El "spring.kafka.bootstrap-servers" viene del applycation.yml
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     }
 
@@ -36,6 +37,7 @@ public class KafkaProducerExampleApplicationTests {
     @Test
     public void testSendEventsToTopic() {
         publisher.sendEventsToTopic(new Customer(263, "test user", "test@gmail.com", "564782542752"));
+        //Esto no es de Kafka, es de la deopendencia org.awaitility
         await().pollInterval(Duration.ofSeconds(3))
                 .atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
                     // assert statement

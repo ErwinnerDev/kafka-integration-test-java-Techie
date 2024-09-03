@@ -26,7 +26,7 @@ public class KafkaConsumerExampleApplicationTests {
 
     @Container
     static final KafkaContainer kafka =
-            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
+            new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest")); //https://java.testcontainers.org/modules/kafka/
 
     @DynamicPropertySource
     static void overridePropertiesInternal(DynamicPropertyRegistry registry) {
@@ -40,9 +40,11 @@ public class KafkaConsumerExampleApplicationTests {
     @Test
     public void testConsumeEvents() {
         log.info("testConsumeEvents method execution started...");
+        //El "spring.kafka.bootstrap-servers" viene del applycation.yml
         Customer customer = new Customer(263, "test user", "test@gmail.com", "564782542752");
         kafkaTemplate.send("javatechie-demo", customer);
         log.info("testConsumeEvents method execution ended...");
+        //Esto no es de Kafka, es de la deopendencia org.awaitility
         await().pollInterval(Duration.ofSeconds(3)).atMost(10, SECONDS).untilAsserted(() -> {
 
         });
